@@ -1,4 +1,4 @@
-package http.server;
+package system.http.server;
 
 /**
  * Represents a single connection to a Bodi server

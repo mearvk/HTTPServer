@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package http;
+package system.http;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
