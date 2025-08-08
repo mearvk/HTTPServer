@@ -1,129 +1,111 @@
 package system.http.server;
 
 /**
- * Represents a single connection to a Bodi server
+ * Represents a single connection to an HTTP server
  * 
  * @author Max Rupplin
  */
 public class HTTPServerContext
 {   
-    public HTTPConnection httpcontext;
+    public HTTPConnection httpConnection;
     
-    public HTTPServer bodiserver;
+    public HTTPServer httpServer;
     
-    public NetworkContext networkcontext;
+    public NetworkContext networkContext;
     
     public String protocol;
     
     public String packet;
     
-    public StringBuffer inputbuffer; 
+    public StringBuffer inputBuffer;
     
-    public String inputstring;
-    
-    public String key;
-    
-    public String value;
-    
-    public String context;    
+    public String inputString;
     
     /**
      * 
-     */
-    public HTTPServerContext()
-    {
-        
-    }
-    
-    /**
-     * 
-     * @param bodiserver
+     * @param httpServer
      * @param protocol
      * @param bodiservercontext
      * @throws Exception 
      */
-    public HTTPServerContext(HTTPServer bodiserver, String protocol, HTTPServerContext bodiservercontext) throws Exception
+    public HTTPServerContext(HTTPServer httpServer, String protocol, HTTPServerContext bodiservercontext) throws Exception
     {
-        if(bodiserver==null || protocol==null || bodiservercontext==null) throw new SecurityException("//bodi/connect");                 
+        if(httpServer ==null || protocol==null || bodiservercontext==null) throw new SecurityException("//bodi/connect");
         
-        this.bodiserver = bodiserver;
+        this.httpServer = httpServer;
         
-        this.protocol = new StringBuffer(protocol).toString();
+        this.protocol = protocol;
         
-        this.inputbuffer = new StringBuffer(bodiservercontext.networkcontext.inqueue);               
+        this.inputBuffer = new StringBuffer(bodiservercontext.networkContext.inqueue);
         
-        this.inputstring = new StringBuffer(bodiservercontext.networkcontext.inqueue).toString();  
+        this.inputString = String.valueOf(bodiservercontext.networkContext.inqueue);
         
-        this.networkcontext = bodiservercontext.networkcontext;
+        this.networkContext = bodiservercontext.networkContext;
         
-        this.httpcontext = bodiservercontext.httpcontext;
+        this.httpConnection = bodiservercontext.httpConnection;
         
-        this.packet = new StringBuffer(bodiservercontext.networkcontext.inqueue).toString();        
+        this.packet = String.valueOf(bodiservercontext.networkContext.inqueue);
     }    
     
     /**
-     * Quick fill for primary loop on Bodiserver; not a total Constructor for BRS at this time. /mr /ok /ss
+     * Quick fill for primary loop on an HTTP server; not a total Constructor for BRS at this time. /mr /ok /ss
      * 
-     * @param bodiserver
-     * @param networkcontext
-     * @param httpcontext
+     * @param httpServer
+     * @param networkContext
+     * @param httpConnection
      * @throws Exception 
      */
-    public HTTPServerContext(HTTPServer bodiserver, NetworkContext networkcontext, HTTPConnection httpcontext) throws Exception
-    {                
-        //bodicontext==null ok /mr /ok
+    public HTTPServerContext(HTTPServer httpServer, NetworkContext networkContext, HTTPConnection httpConnection) throws Exception
+    {
+        if(httpServer ==null || networkContext ==null) throw new SecurityException("//bodi/connect");
         
-        if(bodiserver==null || networkcontext==null /* || bodicontext==null */) throw new SecurityException("//bodi/connect");  
+        this.httpServer = httpServer;
         
-        this.bodiserver = bodiserver;                
+        this.networkContext = networkContext;
         
-        this.networkcontext = networkcontext;
+        this.httpConnection = httpConnection;
         
-        this.httpcontext = httpcontext;
+        this.packet = networkContext.inqueue.toString();
         
-        this.packet = networkcontext.inqueue.toString();
-        
-        this.inputstring = networkcontext.inqueue.toString();
-        
-        //             
+        this.inputString = networkContext.inqueue.toString();
     }
     
     /**
      * 
-     * @param bodiserver
+     * @param httpServer
      * @param protocol
      * @param input
      * @param network
-     * @param bodiconnection
+     * @param httpConnection
      * @throws Exception 
      */
-    public HTTPServerContext(HTTPServer bodiserver, String protocol, String input, NetworkContext network, HTTPConnection bodiconnection) throws Exception
+    public HTTPServerContext(HTTPServer httpServer, String protocol, String input, NetworkContext network, HTTPConnection httpConnection) throws Exception
     {
-        if( bodiserver==null || protocol==null || input==null || network==null || bodiconnection==null) throw new SecurityException("//bodi/connect");
+        if( httpServer ==null || protocol==null || input==null || network==null || httpConnection==null) throw new SecurityException("//bodi/connect");
             
         this.protocol = protocol;
         
-        this.inputstring = input;
+        this.inputString = input;
         
-        this.inputbuffer = network.inqueue;
+        this.inputBuffer = network.inqueue;
         
-        this.bodiserver = bodiserver;
+        this.httpServer = httpServer;
         
-        this.networkcontext = network;
+        this.networkContext = network;
         
-        this.httpcontext = bodiconnection;
+        this.httpConnection = httpConnection;
         
-        this.httpcontext.operation = protocol;
+        this.httpConnection.operation = protocol;
         
-        this.packet = new StringBuffer(network.inqueue).toString();
+        this.packet = String.valueOf(network.inqueue);
         
         //
         
         if( protocol.startsWith("//other") )
         {                       
-            this.httpcontext.cause = "unrecognized protocol";
+            this.httpConnection.cause = "unrecognized protocol";
                     
-            this.httpcontext.message = "unable to complete request";
+            this.httpConnection.message = "unable to complete request";
         }
     }
     
@@ -144,7 +126,7 @@ public class HTTPServerContext
      */
     public void processprotocol(HTTPServerContext connectioncontext) throws Exception
     {
-        connectioncontext.bodiserver.protocolhandler.parseprotocol(connectioncontext);
+        connectioncontext.httpServer.protocolhandler.parseprotocol(connectioncontext);
     }
 
     /**
@@ -154,7 +136,7 @@ public class HTTPServerContext
      */
     public void processrequest(HTTPServerContext connectioncontext) throws Exception
     {
-        connectioncontext.httpcontext.processRequest(connectioncontext);
+        connectioncontext.httpConnection.processRequest(connectioncontext);
     }
     
     /**
@@ -164,6 +146,6 @@ public class HTTPServerContext
      */
     public void processsesponse(HTTPServerContext connectioncontext) throws Exception
     {
-        connectioncontext.networkcontext.processresponse(connectioncontext);
+        connectioncontext.networkContext.processresponse(connectioncontext);
     }
 }

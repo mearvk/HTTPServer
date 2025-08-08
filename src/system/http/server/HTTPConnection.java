@@ -70,16 +70,16 @@ public class HTTPConnection
          
     /**
      * 
-     * @param connectioncontext
+     * @param connectionContext
      * @return 
      */
-    public Boolean processRequest(HTTPServerContext connectioncontext)
+    public Boolean processRequest(HTTPServerContext connectionContext)
     {                
-        StringBuffer buffer = connectioncontext.inputbuffer;      
+        StringBuffer buffer = connectionContext.inputBuffer;
         
-        String protocol = this.stripForProtocolToken(connectioncontext);
+        String protocol = this.stripForProtocolToken(connectionContext);
         
-        this.tryResetHTTPConnection(connectioncontext);
+        this.tryResetHTTPConnection(connectionContext);
         
         try
         {
@@ -87,49 +87,49 @@ public class HTTPConnection
             {
                 case "GET":
 
-                    connectioncontext.httpcontext.processGETRequest(connectioncontext);
+                    connectionContext.httpConnection.processGETRequest(connectionContext);
 
-                    connectioncontext.httpcontext.processGETResponse(connectioncontext);
+                    connectionContext.httpConnection.processGETResponse(connectionContext);
 
                     break;
 
                 case "POST":
 
-                    connectioncontext.httpcontext.processGETRequest(connectioncontext);
+                    connectionContext.httpConnection.processGETRequest(connectionContext);
 
-                    connectioncontext.httpcontext.processGETResponse(connectioncontext);
+                    connectionContext.httpConnection.processGETResponse(connectionContext);
 
                     break;
 
                 case "PUT":
 
-                    connectioncontext.httpcontext.processGETRequest(connectioncontext);
+                    connectionContext.httpConnection.processGETRequest(connectionContext);
 
-                    connectioncontext.httpcontext.processGETResponse(connectioncontext);
+                    connectionContext.httpConnection.processGETResponse(connectionContext);
 
                     break;
 
                 case "PATCH":
 
-                    connectioncontext.httpcontext.processGETRequest(connectioncontext);
+                    connectionContext.httpConnection.processGETRequest(connectionContext);
 
-                    connectioncontext.httpcontext.processGETResponse(connectioncontext);
+                    connectionContext.httpConnection.processGETResponse(connectionContext);
 
                     break;
 
                 case "DELETE":
 
-                    connectioncontext.httpcontext.processGETRequest(connectioncontext);
+                    connectionContext.httpConnection.processGETRequest(connectionContext);
 
-                    connectioncontext.httpcontext.processGETResponse(connectioncontext);
+                    connectionContext.httpConnection.processGETResponse(connectionContext);
 
                     break;
 
                 default: 
                     
-                    connectioncontext.httpcontext.processOtherRequest(connectioncontext);
+                    connectionContext.httpConnection.processOtherRequest(connectionContext);
 
-                    connectioncontext.httpcontext.processOtherResponse(connectioncontext);
+                    connectionContext.httpConnection.processOtherResponse(connectionContext);
 
                     break;
             }        
@@ -154,17 +154,17 @@ public class HTTPConnection
      */
     public Boolean tryResetHTTPConnection(HTTPServerContext httpServerContext)
     {        
-        httpServerContext.httpcontext.cause = "";
+        httpServerContext.httpConnection.cause = "";
         
-        httpServerContext.httpcontext.message = "";
+        httpServerContext.httpConnection.message = "";
         
-        httpServerContext.httpcontext.result = "";
+        httpServerContext.httpConnection.result = "";
         
-        httpServerContext.httpcontext.cause = null;
+        httpServerContext.httpConnection.cause = null;
         
-        httpServerContext.httpcontext.message = null;
+        httpServerContext.httpConnection.message = null;
         
-        httpServerContext.httpcontext.result = null;
+        httpServerContext.httpConnection.result = null;
         
         return false | true;
     }
@@ -184,9 +184,9 @@ public class HTTPConnection
             {
                 Bndi.removecontext(connectioncontext.getcontext(connectioncontext));
                 
-                connectioncontext.httpcontext.result = "success";
+                connectioncontext.httpConnection.result = "success";
                 
-                connectioncontext.httpcontext.message = "context closed";
+                connectioncontext.httpConnection.message = "context closed";
             }
             catch(Exception e)
             {
@@ -195,9 +195,9 @@ public class HTTPConnection
         }
         else
         {
-            connectioncontext.httpcontext.result = "failure";
+            connectioncontext.httpConnection.result = "failure";
         
-            connectioncontext.httpcontext.cause = "no such open context";
+            connectioncontext.httpConnection.cause = "no such open context";
         }        
         
         return false;
@@ -210,28 +210,28 @@ public class HTTPConnection
      */
     public Boolean processOtherResponse(HTTPServerContext connectioncontext)
     {
-        connectioncontext.httpcontext.operation = "//other";
+        connectioncontext.httpConnection.operation = "//other";
         
-        connectioncontext.httpcontext.result = "rejection";
+        connectioncontext.httpConnection.result = "rejection";
         
-        connectioncontext.httpcontext.message = "unusual; please recheck";
+        connectioncontext.httpConnection.message = "unusual; please recheck";
         
         try
         {
             //no valid TTL 
             if(this.getTimeToLive()<=0)
             {
-                connectioncontext.httpcontext.cause = "TTL expired";
+                connectioncontext.httpConnection.cause = "TTL expired";
             }                        
             //no valid session issue
-            else if(this.server.isvalidsessionid(connectioncontext.httpcontext))
+            else if(this.server.isvalidsessionid(connectioncontext.httpConnection))
             {
-                connectioncontext.httpcontext.cause = "Session ID not valid";
+                connectioncontext.httpConnection.cause = "Session ID not valid";
             }
             //unclear cause; tokens may be cause
             else 
             {
-                connectioncontext.httpcontext.cause = "Unclear cause; check all tokens";
+                connectioncontext.httpConnection.cause = "Unclear cause; check all tokens";
             }
         }
         catch(Exception e)
@@ -245,33 +245,31 @@ public class HTTPConnection
     }
     
     /**
-     * 
-     * @param connectioncontext
+     *
+     * @param connectionContext
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
-    public HTTPConnection processGETRequest(HTTPServerContext connectioncontext) throws Exception
+    public HTTPConnection processGETRequest(HTTPServerContext connectionContext) throws Exception
     {               
-        HTTPConnection httpConnection = connectioncontext.httpcontext;
+        HTTPConnection httpConnection = connectionContext.httpConnection;
         
         httpConnection.operation = "GET";
         
-        httpConnection.getSessionID();
-        
         httpConnection.getTimeToLive();
-        
+
         return httpConnection;
     }
     
     /**
      * 
-     * @param connectioncontext
+     * @param connectionContext
      * @return
      * @throws Exception 
      */
-    public HTTPConnection processOtherRequest(HTTPServerContext connectioncontext) throws Exception
+    public HTTPConnection processOtherRequest(HTTPServerContext connectionContext) throws Exception
     {
-        return connectioncontext.httpcontext;
+        return connectionContext.httpConnection;
     }
 
     /**
@@ -321,11 +319,11 @@ public class HTTPConnection
      */
     private Boolean checkConnection(HTTPServerContext connectioncontext)
     {
-        if(connectioncontext.httpcontext ==null) return false;
+        if(connectioncontext.httpConnection ==null) return false;
         
-        if(connectioncontext.httpcontext.ttl<=0) return false;
+        if(connectioncontext.httpConnection.ttl<=0) return false;
         
-        if(this.server.isValidSession(connectioncontext.httpcontext)==null) return false;
+        if(this.server.isValidSession(connectioncontext.httpConnection)==null) return false;
         
         return true;
     }

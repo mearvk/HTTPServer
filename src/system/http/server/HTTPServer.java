@@ -75,7 +75,7 @@ public class HTTPServer extends BaseServer
                     if( this.tryValidateHTTPConnection(httpServerContext) )
                     {                                                                                              
                         
-                        if(httpServerContext.inputstring.startsWith(GET))
+                        if(httpServerContext.inputString.startsWith(GET))
                         {
                             httpServerContext = new HTTPServerContext(this, GET, httpServerContext);
 
@@ -91,14 +91,14 @@ public class HTTPServer extends BaseServer
                         }
                         else
                         {
-                            httpServerContext = new HTTPServerContext(this, OTHER, "", httpServerContext.networkcontext, new HTTPConnection());
+                            httpServerContext = new HTTPServerContext(this, OTHER, "", httpServerContext.networkContext, new HTTPConnection());
 
                             httpServerContext.processsesponse(httpServerContext);
                         }                                                
                     }  
                     else
                     {
-                        httpServerContext = new HTTPServerContext(this, OTHER, "", httpServerContext.networkcontext, new HTTPConnection());
+                        httpServerContext = new HTTPServerContext(this, OTHER, "", httpServerContext.networkContext, new HTTPConnection());
 
                         httpServerContext.processsesponse(httpServerContext);
                     }                    
@@ -182,7 +182,7 @@ public class HTTPServer extends BaseServer
             
             httpservercontext!=null &&
                 
-            httpservercontext.httpcontext !=null &&
+            httpservercontext.httpConnection !=null &&
             
             httpservercontext.packet!=null &&
 
@@ -198,17 +198,17 @@ public class HTTPServer extends BaseServer
     {
         if(httpservercontext==null) return; //throw new SecurityException("//bodi/connect");
         
-        httpservercontext.httpcontext.value = "";
+        httpservercontext.httpConnection.value = "";
         
-        httpservercontext.httpcontext.result = "";
+        httpservercontext.httpConnection.result = "";
         
-        httpservercontext.httpcontext.message = "";
+        httpservercontext.httpConnection.message = "";
         
-        httpservercontext.httpcontext.value = null;
+        httpservercontext.httpConnection.value = null;
         
-        httpservercontext.httpcontext.result = null;
+        httpservercontext.httpConnection.result = null;
         
-        httpservercontext.httpcontext.message = null;
+        httpservercontext.httpConnection.message = null;
     }
     
     /**
@@ -241,7 +241,7 @@ public class HTTPServer extends BaseServer
         
         if(connection.socket==null) return false;
         
-        Bndi.context("//bodi/server/remote/bodiconnections").put(connectioncontext.httpcontext.sessionid.toString(), connectioncontext.httpcontext);
+        Bndi.context("//bodi/server/remote/bodiconnections").put(connectioncontext.httpConnection.sessionid.toString(), connectioncontext.httpConnection);
         
         Bndi.context("//bodi/server/remote/netconnections").put(connection.socket.getInetAddress().toString(), connection);
         

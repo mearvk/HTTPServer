@@ -18,7 +18,7 @@ public class HTTPProtocolHandler
     {                        
         if(connectioncontext==null) throw new SecurityException("//bodi/connect");
         
-        if(connectioncontext.networkcontext!=null) 
+        if(connectioncontext.networkContext !=null)
         {                                    
             switch(connectioncontext.protocol)
             {     
@@ -53,9 +53,9 @@ public class HTTPProtocolHandler
         
         if(!this.startsswith(connectioncontext, "//close")) throw new SecurityException("//bodi/connect");        
         
-        if(!this.containssessionsid(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping."); 
+        if(!this.containssessionsid(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");
         
-        if(!this.containscontext(connectioncontext.inputbuffer)) throw new SecurityException("//bodi/connect");
+        if(!this.containscontext(connectioncontext.inputBuffer)) throw new SecurityException("//bodi/connect");
         
         /*---------------------------------------------------------------------*/                
     }    
@@ -87,9 +87,9 @@ public class HTTPProtocolHandler
         
         if(!this.startsswith(connectioncontext, "//list")) throw new SecurityException("//bodi/connect");        
         
-        if(!this.containssessionsid(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");   
+        if(!this.containssessionsid(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");
         
-        if(!this.containscontext(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //context token missing; stopping.");    
+        if(!this.containscontext(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //context token missing; stopping.");
         
         /*---------------------------------------------------------------------*/                
     }    
@@ -106,9 +106,9 @@ public class HTTPProtocolHandler
         
         if(!this.startsswith(connectioncontext, "//open")) throw new SecurityException("//bodi/connect");
         
-        if(!this.containssessionsid(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");
+        if(!this.containssessionsid(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");
             
-        if(!this.containscontext(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //context token missing; stopping.");                
+        if(!this.containscontext(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //context token missing; stopping.");
         
         /*---------------------------------------------------------------------*/       
     }
@@ -125,11 +125,11 @@ public class HTTPProtocolHandler
         
         if(!this.startsswith(connectioncontext, "//pull")) throw new SecurityException("//bodi/connect");
         
-        if(!this.containssessionsid(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");
+        if(!this.containssessionsid(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");
             
-        if(!this.containscontext(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //context token missing; stopping.");
+        if(!this.containscontext(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //context token missing; stopping.");
             
-        if(!this.containskey(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //key token missing; stopping.");
+        if(!this.containskey(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //key token missing; stopping.");
         
         /*---------------------------------------------------------------------*/       
     }
@@ -146,16 +146,16 @@ public class HTTPProtocolHandler
         
         if(!this.startsswith(connectioncontext, "//put")) throw new SecurityException("//bodi/connect");
         
-        if(!this.containssessionsid(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");
+        if(!this.containssessionsid(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");
             
-        if(!this.containscontext(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //context token missing; stopping.");
+        if(!this.containscontext(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //context token missing; stopping.");
             
-        if( !this.containskey(connectioncontext.inputbuffer) && this.containsvalue(connectioncontext.inputbuffer) )
+        if( !this.containskey(connectioncontext.inputBuffer) && this.containsvalue(connectioncontext.inputBuffer) )
         {
             throw new SecurityException("Bodi //key token missing; stopping.");
         }
         
-        if( this.containskey(connectioncontext.inputbuffer) && !this.containsvalue(connectioncontext.inputbuffer) )
+        if( this.containskey(connectioncontext.inputBuffer) && !this.containsvalue(connectioncontext.inputBuffer) )
         {
             throw new SecurityException("Bodi //value token missing; stopping.");
         }        
@@ -175,9 +175,9 @@ public class HTTPProtocolHandler
         
         if(!this.startsswith(connectioncontext, "//touch")) throw new SecurityException("//bodi/connect");        
         
-        if(!this.containssessionsid(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");
+        if(!this.containssessionsid(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");
             
-        if(!this.containscontext(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //context token missing; stopping.");
+        if(!this.containscontext(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //context token missing; stopping.");
         
         /*---------------------------------------------------------------------*/
     }
@@ -194,11 +194,11 @@ public class HTTPProtocolHandler
         
         if(!this.startsswith(connectioncontext, "//trade")) throw new SecurityException("//bodi/connect");        
         
-        if(!this.containssessionsid(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");
+        if(!this.containssessionsid(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");
             
-        if(!this.containscontext(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //context token missing; stopping.");
+        if(!this.containscontext(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //context token missing; stopping.");
 
-        if(!this.containskey(connectioncontext.inputbuffer)) throw new SecurityException("Bodi //key token missing; stopping.");
+        if(!this.containskey(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //key token missing; stopping.");
         
         /*---------------------------------------------------------------------*/
     }
@@ -215,7 +215,7 @@ public class HTTPProtocolHandler
     {                       
         String protocol = connectioncontext.protocol;
         
-        StringBuffer buffer = connectioncontext.inputbuffer;
+        StringBuffer buffer = connectioncontext.inputBuffer;
                 
         switch(buffer.toString())
         {
@@ -233,7 +233,7 @@ public class HTTPProtocolHandler
      */
     public Boolean startsswith(HTTPServerContext connectioncontext, String comparator)
     {
-        String input = connectioncontext.inputstring;
+        String input = connectioncontext.inputString;
         
         return input.startsWith(comparator);
     }
@@ -285,7 +285,7 @@ public class HTTPProtocolHandler
      */
     protected Boolean subtokenswellformed(HTTPServerContext connectioncontext)
     {
-        String[] tokens = connectioncontext.inputstring.split(" ");            
+        String[] tokens = connectioncontext.inputString.split(" ");
         
         for(String token : tokens)
         {

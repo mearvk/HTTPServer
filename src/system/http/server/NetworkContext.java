@@ -90,11 +90,11 @@ public class NetworkContext
     {
         //set output buffer, flag, and bodi object reference into the output queue
         
-        connectioncontext.networkcontext.outqueue.append(connectioncontext.httpcontext.toString());
+        connectioncontext.networkContext.outqueue.append(connectioncontext.httpConnection.toString());
                                                                         
-        connectioncontext.networkcontext.haswriteready = true;
+        connectioncontext.networkContext.haswriteready = true;
                         
-        connectioncontext.networkcontext.thread.outputlistenerthread.haswriteready = true;                                                
+        connectioncontext.networkContext.thread.outputlistenerthread.haswriteready = true;
                             
         //connectioncontext.networkcontext.inqueue = connectioncontext.networkcontext.inqueue.delete(0, connectioncontext.inputstring.length());      
         
