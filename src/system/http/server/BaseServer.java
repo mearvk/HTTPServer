@@ -28,7 +28,7 @@ public abstract class BaseServer extends Thread
     
     public Boolean running = true;
     
-    public ArrayList<NetworkContext> connections = new ArrayList();
+    public ArrayList<NetworkContext> connections = new ArrayList<>();
     
     public InputQueue connectionqueue = new InputQueue();
     

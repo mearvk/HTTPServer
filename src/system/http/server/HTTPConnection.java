@@ -2,32 +2,21 @@ package system.http.server;
 
 import system.http.Bndi;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
 /**
  *
  * @author Max Rupplin
  */
 public class HTTPConnection
 {
-    public Integer hash = 0x008808ef;
-    
-    public Bndi bodi;
-    
     public HTTPServer server;
     
     public Boolean islive = true;
             
     public NetworkContext connection;
     
-    public Integer sessionid;
-    
     public Long ttl = 60000*5L;
     
-    public Long day;       
-    
-    public Serializable object;
+    public Long day;
     
     public String result;
     
@@ -35,15 +24,9 @@ public class HTTPConnection
     
     public String cause;
     
-    public String context;
-    
-    public String key;    
-    
     public String message;
     
-    public String value;   
-    
-    public ArrayList<String> values;
+    public String value;
     
    
     /**
@@ -69,11 +52,8 @@ public class HTTPConnection
     }
          
     /**
-     * 
-     * @param connectionContext
-     * @return 
      */
-    public Boolean processRequest(HTTPServerContext connectionContext)
+    public void processRequest(HTTPServerContext connectionContext)
     {                
         StringBuffer buffer = connectionContext.inputBuffer;
         
@@ -141,12 +121,10 @@ public class HTTPConnection
         finally
         {
             //
-        }        
-        
-        return this.object == null;
-    }    
+        }
+
+    }
     
-        
     /**
      *      * 
      * @param httpServerContext
@@ -170,23 +148,21 @@ public class HTTPConnection
     }
     
     /**
-     * 
-     * @param connectioncontext
-     * @return 
+     * @param connectionContext
      */
-    public Boolean processGETResponse(HTTPServerContext connectioncontext)
+    public void processGETResponse(HTTPServerContext connectionContext)
     {
         this.islive = false;       
         
-        if(Bndi.hascontextat(connectioncontext.getcontext(connectioncontext)))
+        if(Bndi.hascontextat(connectionContext.getcontext(connectionContext)))
         {
             try
             {
-                Bndi.removecontext(connectioncontext.getcontext(connectioncontext));
+                Bndi.removecontext(connectionContext.getcontext(connectionContext));
                 
-                connectioncontext.httpConnection.result = "success";
+                connectionContext.httpConnection.result = "success";
                 
-                connectioncontext.httpConnection.message = "context closed";
+                connectionContext.httpConnection.message = "context closed";
             }
             catch(Exception e)
             {
@@ -195,43 +171,34 @@ public class HTTPConnection
         }
         else
         {
-            connectioncontext.httpConnection.result = "failure";
+            connectionContext.httpConnection.result = "failure";
         
-            connectioncontext.httpConnection.cause = "no such open context";
-        }        
-        
-        return false;
+            connectionContext.httpConnection.cause = "no such open context";
+        }
+
     }
     
     /**
-     * 
-     * @param connectioncontext
-     * @return 
+     * @param connectionContext
      */
-    public Boolean processOtherResponse(HTTPServerContext connectioncontext)
+    public void processOtherResponse(HTTPServerContext connectionContext)
     {
-        connectioncontext.httpConnection.operation = "//other";
+        connectionContext.httpConnection.operation = "OTHER";
         
-        connectioncontext.httpConnection.result = "rejection";
+        connectionContext.httpConnection.result = "REJECTION";
         
-        connectioncontext.httpConnection.message = "unusual; please recheck";
+        connectionContext.httpConnection.message = "unusual; please recheck";
         
         try
         {
             //no valid TTL 
             if(this.getTimeToLive()<=0)
             {
-                connectioncontext.httpConnection.cause = "TTL expired";
-            }                        
-            //no valid session issue
-            else if(this.server.isvalidsessionid(connectioncontext.httpConnection))
-            {
-                connectioncontext.httpConnection.cause = "Session ID not valid";
+                connectionContext.httpConnection.cause = "TTL expired";
             }
-            //unclear cause; tokens may be cause
-            else 
+            else
             {
-                connectioncontext.httpConnection.cause = "Unclear cause; check all tokens";
+                connectionContext.httpConnection.cause = "Unclear cause; check all tokens";
             }
         }
         catch(Exception e)
@@ -240,17 +207,15 @@ public class HTTPConnection
         }
         finally
         {
-            return false;
+            return;
         }
     }
     
     /**
-     *
      * @param connectionContext
-     * @return
      * @throws Exception
      */
-    public HTTPConnection processGETRequest(HTTPServerContext connectionContext) throws Exception
+    public void processGETRequest(HTTPServerContext connectionContext) throws Exception
     {               
         HTTPConnection httpConnection = connectionContext.httpConnection;
         
@@ -258,49 +223,15 @@ public class HTTPConnection
         
         httpConnection.getTimeToLive();
 
-        return httpConnection;
     }
     
     /**
-     * 
      * @param connectionContext
-     * @return
-     * @throws Exception 
+     * @throws Exception
      */
-    public HTTPConnection processOtherRequest(HTTPServerContext connectionContext) throws Exception
+    public void processOtherRequest(HTTPServerContext connectionContext) throws Exception
     {
-        return connectionContext.httpConnection;
     }
-
-    /**
-     * 
-     * @param connectioncontext
-     * @return 
-     */
-    public String stripForKey(HTTPServerContext connectioncontext)
-    {
-        return ProtocolStripper.stripforkey(connectioncontext);
-    }
-    
-    /**
-     * 
-     * @param connectioncontext
-     * @return 
-     */
-    public String stripforvalue(HTTPServerContext connectioncontext)
-    {
-        return ProtocolStripper.stripforvalue(connectioncontext);
-    }
-    
-    /**
-     * 
-     * @param connectioncontext
-     * @return 
-     */
-    public String stripforcontext(HTTPServerContext connectioncontext)
-    {
-        return ProtocolStripper.stripforcontext(connectioncontext);
-    }     
     
     /**
      * 
@@ -311,37 +242,7 @@ public class HTTPConnection
     {
         return ProtocolStripper.stripforprotocoltoken(connectioncontext);
     }
-    
-    /**
-     * 
-     * @param connectioncontext
-     * @return 
-     */
-    private Boolean checkConnection(HTTPServerContext connectioncontext)
-    {
-        if(connectioncontext.httpConnection ==null) return false;
-        
-        if(connectioncontext.httpConnection.ttl<=0) return false;
-        
-        if(this.server.isValidSession(connectioncontext.httpConnection)==null) return false;
-        
-        return true;
-    }
-       
-    /**
-     * 
-     * @return 
-     */
-    protected Integer getSessionID()
-    {
-        if(this.sessionid==null || this.sessionid==0)
-        {
-            return this.hashCode();
-        }
-        
-        return this.sessionid;
-    }
-    
+
     /**
      * 
      * @return 

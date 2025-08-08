@@ -121,31 +121,31 @@ public class HTTPServerContext
     
     /**
      * 
-     * @param connectioncontext
+     *
      * @throws Exception 
      */
-    public void processprotocol(HTTPServerContext connectioncontext) throws Exception
+    public void processprotocol() throws Exception
     {
-        connectioncontext.httpServer.protocolhandler.parseprotocol(connectioncontext);
+        //parseProtocol(connectioncontext);
     }
 
     /**
      * 
-     * @param connectioncontext
+     *
      * @throws Exception 
      */
-    public void processrequest(HTTPServerContext connectioncontext) throws Exception
+    public void processrequest() throws Exception
     {
-        connectioncontext.httpConnection.processRequest(connectioncontext);
+       // connectioncontext.httpConnection.processRequest(connectioncontext);
     }
     
     /**
      * 
-     * @param connectioncontext
+     *
      * @throws Exception 
      */
-    public void processsesponse(HTTPServerContext connectioncontext) throws Exception
+    public void processsesponse() throws Exception
     {
-        connectioncontext.networkContext.processresponse(connectioncontext);
+        //connectioncontext.networkContext.processresponse(connectioncontext);
     }
 }

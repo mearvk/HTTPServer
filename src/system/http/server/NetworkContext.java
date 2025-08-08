@@ -14,14 +14,6 @@ public class NetworkContext
 {
     /**
      * 
-     */
-    public NetworkContext()
-    {
-        
-    }
-       
-    /**
-     * 
      * @param server 
      */
     public NetworkContext(BaseServer server)
@@ -34,8 +26,6 @@ public class NetworkContext
     public BaseServer server;
     
     public volatile Socket socket;
-    
-    public String ipaddress;
     
     public InputStream inputstream;
     
@@ -55,13 +45,7 @@ public class NetworkContext
     
     public Boolean isdonewriting;
     
-    public Boolean isdonereading;
-    
     public Boolean haswriteready;
-    
-    public Boolean hasreadready;
-    
-    public Integer sessionid;
        
     /**
      * 

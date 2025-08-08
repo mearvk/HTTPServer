@@ -9,12 +9,10 @@ public class HTTPProtocolHandler
     public Integer hash = 0x008808ef;
     
     /**
-     * 
      * @param connectioncontext
-     * @return
-     * @throws Exception 
+     * @throws Exception
      */
-    protected HTTPServerContext parseprotocol(HTTPServerContext connectioncontext ) throws Exception
+    protected void parseProtocol(HTTPServerContext connectioncontext ) throws Exception
     {                        
         if(connectioncontext==null) throw new SecurityException("//bodi/connect");
         
@@ -25,16 +23,16 @@ public class HTTPProtocolHandler
                 //
                 case HTTPProtocol.GET:
                     
-                    this.processcloseprotocol(connectioncontext);                                                            
+                    this.processGETprotocol(connectioncontext);
                     
-                    return connectioncontext;
+                    return;
                    
                 //
                 default:
                     
                     this.processunknownprotocol(connectioncontext);                                         
                     
-                    return connectioncontext;
+                    return;
             }                        
         }  
         
@@ -42,20 +40,18 @@ public class HTTPProtocolHandler
     }     
 
     /**
-     * CLOSE token pre-processing goes here
+     * GET protocol tokens pre-processing goes here
      * 
-     * @param connectioncontext
+     * @param connectionContext
      * @throws SecurityException 
      */
-    private void processcloseprotocol(HTTPServerContext connectioncontext) throws SecurityException
+    private void processGETprotocol(HTTPServerContext connectionContext) throws SecurityException
     {        
-        if(!this.subtokenswellformed(connectioncontext)) throw new SecurityException("//bodi/connect");    
+        if(!this.subtokenswellformed(connectionContext)) throw new SecurityException("//bodi/connect");
         
-        if(!this.startsswith(connectioncontext, "//close")) throw new SecurityException("//bodi/connect");        
-        
-        if(!this.containssessionsid(connectioncontext.inputBuffer)) throw new SecurityException("Bodi //sessionid token missing; stopping.");
-        
-        if(!this.containscontext(connectioncontext.inputBuffer)) throw new SecurityException("//bodi/connect");
+        if(!this.startsswith(connectionContext, "GET")) throw new SecurityException("//bodi/connect");
+
+        if(!this.containscontext(connectionContext.inputBuffer)) throw new SecurityException("//bodi/connect");
         
         /*---------------------------------------------------------------------*/                
     }    

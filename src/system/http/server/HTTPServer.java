@@ -11,7 +11,7 @@ public class HTTPServer extends BaseServer
 {                       
     public Integer hash = 0x008808ef;
     
-    public HTTPProtocolHandler protocolhandler = new HTTPProtocolHandler();
+    public HTTPProtocolHandler protocolHandler = new HTTPProtocolHandler();
     
     public Boolean running = true;
     
@@ -70,8 +70,11 @@ public class HTTPServer extends BaseServer
                 if( this.tryValidateNetworkConnection(networkContext) ) //
                 {                                                            
                     
-                    httpServerContext = new HTTPServerContext(this, networkContext, this.pollStoredHTTPSessions(networkContext)); //we care to use only existing bodisessions or handshakes
-                    
+                    //httpServerContext = new HTTPServerContext(this, networkContext, this.pollStoredHTTPSessions(networkContext)); //we care to use only existing bodisessions or handshakes
+
+                    httpServerContext = new HTTPServerContext(this, networkContext, null); //we care to use only existing bodisessions or handshakes
+
+
                     if( this.tryValidateHTTPConnection(httpServerContext) )
                     {                                                                                              
                         
@@ -79,28 +82,28 @@ public class HTTPServer extends BaseServer
                         {
                             httpServerContext = new HTTPServerContext(this, GET, httpServerContext);
 
-                            httpServerContext.processprotocol(httpServerContext);
+                            httpServerContext.processprotocol();
 
-                            httpServerContext.processrequest(httpServerContext);
+                            httpServerContext.processrequest();
 
-                            httpServerContext.processsesponse(httpServerContext);
+                            httpServerContext.processsesponse();
                             
                             //
-                            
-                            this.trystorecontextstobodhi(httpServerContext, networkContext);
+
+                           // this.trystorecontextstobodhi(httpServerContext, networkContext);
                         }
                         else
                         {
                             httpServerContext = new HTTPServerContext(this, OTHER, "", httpServerContext.networkContext, new HTTPConnection());
 
-                            httpServerContext.processsesponse(httpServerContext);
+                            httpServerContext.processsesponse();
                         }                                                
                     }  
                     else
                     {
                         httpServerContext = new HTTPServerContext(this, OTHER, "", httpServerContext.networkContext, new HTTPConnection());
 
-                        httpServerContext.processsesponse(httpServerContext);
+                        httpServerContext.processsesponse();
                     }                    
                 }                                                   
             }
@@ -226,43 +229,6 @@ public class HTTPServer extends BaseServer
     }
     
     /**
-     * Store session objects with a Bodi carekeeper
-     * 
-     * @param connectioncontext
-     * @param connection
-     * @return
-     * @throws Exception 
-     */    
-    public Boolean trystorecontextstobodhi(HTTPServerContext connectioncontext, NetworkContext connection) throws Exception
-    {
-        if(connectioncontext==null) return false;
-        
-        if(connection==null) return false;
-        
-        if(connection.socket==null) return false;
-        
-        Bndi.context("//bodi/server/remote/bodiconnections").put(connectioncontext.httpConnection.sessionid.toString(), connectioncontext.httpConnection);
-        
-        Bndi.context("//bodi/server/remote/netconnections").put(connection.socket.getInetAddress().toString(), connection);
-        
-        return true;
-    }
-    
-    /**
-     * Returns the Collection of Bodiconnections from the Bodi server context.
-     * 
-     * @return The Collection of Bodiconnections from the Bodi server context.
-     */
-    public Collection<HTTPConnection> getbodiconnections()
-    {
-        Collection<Object> objects = Bndi.context("//bodi/server/remote/bodiconnections").values();
-        
-        Collection<HTTPConnection> _connections = (Collection<HTTPConnection>)(Collection<?>)objects;
-        
-        return _connections;
-    }
-    
-    /**
      * Returns the next network connection from InputQueue from BasicServer class to Bodiremoteserver
      * 
      * @return That particular Networkcontext or null if none found queued
@@ -291,99 +257,5 @@ public class HTTPServer extends BaseServer
         {
             e.printStackTrace();
         }
-    }    
-    
-    /**
-     * 
-     * @param networkcontext
-     * @return
-     * @throws Exception 
-     */
-    public HTTPConnection pollStoredHTTPSessions(NetworkContext networkcontext) throws Exception
-    {
-        if(networkcontext==null) throw new SecurityException("//bodi/connect");
-        
-        if(networkcontext.inqueue==null) throw new SecurityException("//bodi/connect");        
-                    
-        String[] tokens = networkcontext.inqueue.toString().split(" ");                
-        
-        for(String token : tokens)
-        {          
-            if(token.trim().startsWith("//sessionid"))
-            {
-                for(HTTPConnection existingconnection : this.getbodiconnections())
-                {
-                    token = token.trim().replace("//sessionid=", "");
-                    
-                    if(token==null || existingconnection.sessionid==null) continue;                        
-                    
-                    int receivedsessionid = Integer.parseInt(token);
-                    
-                    int existingsessionid = existingconnection.sessionid;
-                    
-                    if(receivedsessionid == existingsessionid)
-                    {
-                        if(existingconnection.ttl>0)
-                            
-                        return existingconnection;
-                        
-                        else return null;                            
-                    }
-                }
-            }
-        }
-        
-        if(networkcontext.inqueue.toString().startsWith("//handshake")) 
-        {
-            return new HTTPConnection();
-        }
-        
-        else return null;
-    }
-    
-    /**
-     * 
-     * @param connection
-     * @return 
-     */
-    public Boolean isvalidsessionid(HTTPConnection connection)
-    {
-        if(connection==null) return false;
-        
-        if(connection.sessionid==null) return false;
-        
-        for(HTTPConnection existingconnection : this.getbodiconnections())
-        {
-            if(Objects.equals(existingconnection.sessionid, connection.sessionid))
-            {
-                return true;
-            }
-        }
-        
-        return false;
-    }  
-    
-    /**
-     * 
-     * @param connection
-     * @return 
-     */
-    public Boolean isValidSession(HTTPConnection connection)
-    {
-        if(connection==null) return false;
-        
-        if(connection.sessionid==null) return false;
-        
-        if(connection.ttl<=0) return false;
-        
-        for(HTTPConnection existingConnection : this.getbodiconnections())
-        {
-            if(Objects.equals(existingConnection.sessionid, connection.sessionid))
-            {                
-                return connection.ttl > 0;                
-            }
-        }
-        
-        return false;
     }
 }
