@@ -24,7 +24,7 @@ public class HTTPServer extends BaseServer
     {      
         super(host, port);
         
-        if(host==null || port==null) throw new SecurityException("//bodi/connect");
+        if(host==null || port==null) throw new SecurityException("//http/connect");
         
         this.host = host;
         
@@ -43,7 +43,7 @@ public class HTTPServer extends BaseServer
     {
         super("localhost", port);
         
-        if(port==null) throw new SecurityException("//bodi/connect");
+        if(port==null) throw new SecurityException("//http/connect");
         
         this.port = port;        
         
@@ -68,12 +68,8 @@ public class HTTPServer extends BaseServer
             try
             {                
                 if( this.tryValidateNetworkConnection(networkContext) ) //
-                {                                                            
-                    
-                    //httpServerContext = new HTTPServerContext(this, networkContext, this.pollStoredHTTPSessions(networkContext)); //we care to use only existing bodisessions or handshakes
-
-                    httpServerContext = new HTTPServerContext(this, networkContext, null); //we care to use only existing bodisessions or handshakes
-
+                {
+                    httpServerContext = new HTTPServerContext(this, networkContext, new HTTPConnection());
 
                     if( this.tryValidateHTTPConnection(httpServerContext) )
                     {                                                                                              
